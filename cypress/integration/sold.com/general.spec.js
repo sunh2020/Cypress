@@ -1,47 +1,63 @@
 /// <reference types="cypress" />
 
-describe('TodoMVC', () => {
+describe('TodoApp', () => {
     beforeEach(() => {
-      cy.visit('/')
+      cy.visit('http://todomvc.com/examples/react/')
     })
 
-    it('hides main', () => {
-        cy.get('.filters').should('not.exist')
-      })
-
-    it('hides footer', () => {
-        cy.get('.filters').should('not.exist')
+    it('adds 2 items', () => {
+      cy.get('.new-todo')
+        
+        .type('Feed the cat{enter}')
+        .type('Watch TV{enter}')
+   
+      cy.get('.todo-list li').should('have.length', 2)
+    })
+  })
+   
+    it('displays two todo items by default', () => {
+   
+      
+    })
+       
+    context('New items', () => {
+      it('adds 2 items', () => { 
+        cy.get('.new-todo')
+        .type('Walk the dog{enter}')
+        .type('Clean the room{enter}')
       })
   
-       
 
-    it('displays two todo items by default', () => {
-        
-        it('can add new todo items', () => {
-        
-            const newItem = 'Feed the cat'
-        
-          
-            cy.get('[data-test=new-todo]').type(`${newItem}{enter}`)
-
-            cy.get('.todo-list li')
-            .should('have.length', 3)
-            .last()
-            .should('have.text', newItem)
-        })
-
+    })
+    
+    context('Checked completed', () => {
+      beforeEach(() => {
+        cy.contains('Walk the dog')
+        .parent()
+        .find('input[type=checkbox]')
+        .check()
+      
     })
     it('can filter for completed tasks', () => {
-  
-        cy.contains('Completed').click()
-  
-        cy.get('.todo-list li')
-          .should('have.length', 0)
-          .first()
-          .should('have.text', 'Clean the room')
-  
-        cy.contains('Walk the dog').should('not.exist')
-      })
-  
+     
+      cy.contains('Completed').click()
+
+      cy.get('.todo-list li')
+        .should('have.length', 1)
+        .first()
+        .should('have.text', 'Walk the dog')
+
+      cy.contains('feed cat').should('not.exist')
+    })
+    
+    it('can delete all completed tasks', () => {
+    
+      cy.contains('Clear completed').click()
+
+        
+      
+
+      cy.contains('Clear completed').should('not.exist')
+  })
     
 })
